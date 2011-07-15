@@ -1,0 +1,42 @@
+#
+# Simple model of a WR90 waveguide
+# 	delta L = .02286m/22 = .0010390909
+#	Upper freq limit ~ 28,871,391,328.708
+#
+#
+# wr90 (0.90x0.40) inches or (0.02286x0.01016) meters
+#
+# dz = 0.02286/22 = 1.03909090909e-3
+# dy = 0.01016/10 = 1.016e-3
+# dx = anything
+#
+dx .00103909090
+dy 1.016e-3
+dz 1.03909090909e-3
+
+mesh 64 10 22
+maximumIteration 2000
+
+excitation 1 1 1 10 1 22 ey sin 1.0 10.0e9 0.0 0.0
+#
+# Output viz and bob results similar to the Toy codes
+#
+output 1 64 1 10 1 22 ey viz 10
+output 20 20 5 5 11 11 ey dat 1
+
+#
+# Terminate the ends of the waveguide in absorbing boundaries
+#
+rtxl 1 1 1 10 1 22 0.0
+rtxh 64 64 1 10 1 22 0.0
+#
+# Specify the long sides of th4e waveguide
+#
+rtyl 1 64 1 1 1 22 -1.0
+rtyh 1 64 10 10 1 22 -1.0
+#
+# Specify the short sides of the waveguide
+#
+rtzl 1 64 1 10 1 1 -1.0
+rtzh 1 64 1 10 22 22 -1.0
+

@@ -1,0 +1,24 @@
+# 
+# Illustrate propagation of the ey field in the z direction
+#
+mesh 1 1 100
+maximumIteration 500
+dx 0.05
+dy 0.05
+dz 0.05
+
+excitation 1 1   1 1   1 1 ey exp1 1.0 1.5e-8 0.1e-8 0.0
+
+
+output 1 1  1 1  80 80  ey dat 1
+output 1 1  1 1  20 20  ey dat 1
+
+rtxl 1 1 1 1 1 100 1.0
+rtxh 1 1 1 1 1 100 1.0
+rtyl 1 1 1 1 1 100 -1.0
+rtyh 1 1 1 1 1 100 -1.0
+
+rtzl 1 1 1 1 1 1 0.0
+rtzh 1 1 1 1 100 100 -1.0
+
+rtzh 1 1 1 1 60 60 -0.9

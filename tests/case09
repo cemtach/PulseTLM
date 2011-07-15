@@ -1,0 +1,23 @@
+# 
+# Illustrate propagation of the ey field in the x direction
+# Tests input in fully capitalized form, as test of the parser.
+#
+MESH 100 1 1
+MAXIMUMiTERATION 500
+DX 0.05
+DY 0.05
+DZ 0.05
+
+EXCITATION 1 1   1 1   1 1 EY EXP1 1.0 1.5e-8 0.1e-8 0.0
+OUTPUT 80 80  1 1  1 1  EY DAT 1
+OUTPUT 20 20  1 1  1 1  EY DAT 1
+
+RTXL 1 1   1 1   1 1 0.0
+RTXH 100 100   1 1   1 1 -1.0
+
+RTYL 1 100  1 1  1 1 -1.0
+RTYH 1 100  1 1  1 1 -1.0
+RTZL 1 100  1 1  1 1 1.0
+RTZH 1 100  1 1  1 1 1.0
+
+RTXH 60 60  1 1  1 1 -0.9

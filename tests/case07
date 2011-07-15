@@ -1,0 +1,22 @@
+# 
+# Illustrate waveguide propagation in the x direction.
+#
+mesh 132 20 9
+maximumIteration 1003
+dx 0.00113333
+dy 0.001145
+dz 0.00113333
+
+excitation 1 1   1 20   1 9 ez sin 1.0 10.0e9 0.0 0.0
+output 80 80  10 10  5 5  ez dat 1
+output 20 20  10 10  5 5  ez dat 1
+output 1 132  1 20  1 9  ez viz 100
+
+rtxl 1 1   1 20   1 9 0.0
+rtxh 132 132   1 20   1 9 -1.0
+
+rtyl 1 132  1 1  1 9 -1.0
+rtyh 1 132  20 20  1 9 -1.0
+rtzl 1 132  1 20  1 1 -1.0
+rtzh 1 132  1 20  9 9 -1.0
+

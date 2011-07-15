@@ -1,0 +1,45 @@
+#
+# A 2D example, which is a two-dimensional layer of 3D TLM voxels with
+# the upper and lower reflection coefficients set tp PEC (-1.0) or
+# PMC (1.0) depending on whether you want the electric field normal to
+# the plane or the magnetic field normal to the plane, respectively.
+#
+# modeled after case08, but with mtv output
+#
+
+mesh 256 256 3
+maximumIteration 1000
+
+dx 0.03
+dy 0.03
+dz 0.03
+
+
+excitation 200 200   180 180   1 3 ez sin 1.0 1.0e9 1.0e-9 0.0
+output 1 256  1 256  2 2  ez mtv 20
+
+
+#
+# This is an xy plane so the positive and negative z planes will determine
+# the guiding.  Set these to -1.0 for PEC or E normal.  Set these to 1.0
+# for PMC or H normal.
+#
+
+rtzh 1 256 1 256 1 1 -1.0
+rtzl 1 256 1 256 3 3 -1.0
+
+
+#
+# Set the outer boundaries to 0.0 for an absorbing boundary or 0.0
+# reflections.
+#
+
+rtxh 256 256 1 256 1 3 0.0
+rtxl 1 1 1 256 1 3 0.0
+
+rtyh 1 256 256 256 1 3 0.0
+rtyl 1 256 1 1 1 3 0.0
+
+
+
+
