@@ -1,0 +1,36 @@
+
+
+###############################
+Changes since 0.2.2
+
+The input language has been changed to be case insensitive.
+
+The build system has been converted to use the GNU toolchains
+so that
+
+configure && make
+
+should just work on most systems.  It has been tested on
+more platforms.
+
+The tests should work in the Bourne and C shells now.
+
+Diagnostic messages have been added for more failure cases.
+Hopefully if things go wrong, it will now be clearer as to
+why.
+
+Work has started on a Unix-style manual page.
+
+The code has been modified to improve readability and,
+hopefully, maintainability.
+
+Kudos to the diligent work of Hugh Sasse!
+
+Enjoy
+
+
+
+
+
+
+
