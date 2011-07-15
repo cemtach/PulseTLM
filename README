@@ -1,0 +1,39 @@
+
+PulseTLM -- A Transmission Line Matrix (TLM) based modelling
+and simulation package
+
+
+In order to test the make, cd into tests.  Once there, make check.
+This will run the tests to create several test.log files.  You should
+compare each of these by hand because the numerical precision can vary
+significantly from system to system.  Hopefully the only major
+differences you will see are the simulation times.  8)
+
+
+
+make
+cd tests
+make check
+
+
+
+more test01.log
+more test02.log
+.
+.
+.
+
+
+
+###############################
+You may wish to:
+
+automake
+autoconf
+
+if ./configure gives you woes upon running, which should recreate
+based on your local installations.
+
+
+
+
