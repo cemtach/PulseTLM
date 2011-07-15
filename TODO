@@ -1,0 +1,79 @@
+Things that may be worth doing in the future, with no implied commitments!
+
+Make the language case insensitive, unless there is a good reason not to.
+        [Looks like this is done now?]
+
+Consider whether unambiguous abbreviations of long keywords might be
+supported.  Mat for Material?
+
+Improve the Unix manual page to incorporate descriptions of what the keywords
+actually do, culled from the HTML version of the docs.
+
+Revisit existing parser code with a view to using snprintf and the like
+to preven buffer overruns.
+
+Investigate the portability of {YACC, BISON, BYACC} and the possibilities
+of creating a proper parser, with error checking of input. Is the increase
+in dependencies worth the trouble?
+
+Investigate other output formats, now that 3D graphics is more popular.
+Possible "blue sky" projects include output suitable for Blender
+http://www.blender.org/
+and ggobi
+http://www.ggobi.org/
+as well as VRML, X3D, and .OBJ formats. Would the use of some "Esperanto"
+format and separate translators be better?  
+Does Scilab offer anything useful for examining the results? Scilab is
+free software program that does similar work to Matlab.
+
+Provide some means of visualizing the model prior to simulation so that
+it can be checked.  This need not be a visualization tool, just an
+appropriate output format.
+
+Find out what is to be done about case08 which is a 2D simulation with no
+test file.
+
+Check that the program behaves properly for an empty input file.
+There should probably be a test for that, and other pathological cases.
+The platform dependence of I/O libraries could lead to oddness.
+
+
+Collect a list of platforms on which this is known to work, and with
+which compiler[, linker[ and assembler] if this can be determined].
+This would give us an idea of the scale of any portability problems,
+and possibly encourage reports and fixes from platforms not
+supported.
+
+Depending on the support for C99, which I think ./configure can
+determine (AC_PROG_CC_STDC), add const keywords where appropriate,
+to improve optimisation.  [Possibly try this out to see if it makes
+much difference.]  There ought to be wide support for C99 10 years
+after the standard, but that may be an unrealistic assumption.  The
+macro AC_C_CONST would help here, as it defines const to be empty if
+it is not supported, but this macro and AC_C_VOLATILE are
+obsolescent according to
+http://www.gnu.org/software/hello/manual/autoconf/C-Compiler.html
+(for example).
+AC_PROG_CC_C99 may also be of interest.
+
+In src/userOutput.c LOTS of references to voxel[i][j][k].something
+involve 3 memory references which are all the same.  I don't know if 
+these get optimised, but what about
+    TlmVoxel  *voxelijk;
+
+    voxelijk = &(voxel[i][j][k];
+    voxelijk->something/*...*/;
+Which I think ought to be quicker....
+
+I'm seeing 15 calls to malloc(), no calls to free().  I suspect a memory
+leak is lurking in there somewhere.
+
+
+
+====
+autoconf
+automake
+./configure
+make clean
+make
+
