@@ -1,0 +1,553 @@
+dnl Process this file with autoconf to produce a configure script.
+
+dnl According to 
+dnl http://www.gnu.org/software/autoconf/manual/html_node/Initializing-configure.html
+dnl AC_INIT should have package name, [version], [bug address]
+dnl [tarfile]
+AC_INIT(PulseTLM, 0.2.5)
+dnl AC_CONFIG_SRCDIR(src/PulseTLM.c)
+dnl I think @srcdir@ ends up as this top directory.
+AM_INIT_AUTOMAKE(PulseTLM, 0.2.5)
+
+
+
+AM_CONFIG_HEADER(config.h)
+
+
+AC_SUBST(XDR_LIB)
+
+builtin(include, mdw_check_manylibs.m4)
+builtin(include, acpulse.m4)
+
+dnl checks for shell properties
+dnl check if #! lines work (interpval will be yes if so):
+AC_SYS_INTERPRETER
+AC_PATH_PROGS([bourne_shell], [bash ksh zsh sh])
+AC_SUBST([bourne_shell])
+AC_PATH_PROGS([c_shell], [csh tcsh])
+AC_SUBST([c_shell])
+AM_CONDITIONAL(HAVE_BOURNE_SHELL, test "X${bourne_shell}" != "X")
+AM_CONDITIONAL(HAVE_C_SHELL, test "X${c_shell}" != "X")
+
+dnl for comparing files.
+AC_PATH_PROGS([spdiff], [spdiff, gdiff, diff])
+dnl for comparing binary files. If they get sent to the screen,
+dnl the terminal may get locked up, and the machine may beep like mad.
+AC_PATH_PROG([cmp], [cmp])
+
+
+dnl Does make set $MAKE ??
+AC_PROG_MAKE_SET
+dnl http://www.openismus.com/documents/linux/automake/automake.shtml
+dnl recommends adding AC_PROG_RANLIB so subdirectories may
+dnl be built as libraries.  Probably a good thing to define
+dnl anyway.
+AC_PROG_RANLIB
+
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_ISC_POSIX
+
+dnl **** Check for host type
+AC_CANONICAL_HOST
+
+dnl **** Check for some compiler/system characteristics
+
+AC_C_CHAR_UNSIGNED
+AC_CHECK_SIZEOF(char,0)
+AC_CHECK_SIZEOF(short,0)
+AC_CHECK_SIZEOF(int,0)
+AC_CHECK_SIZEOF(long,0)
+AC_CHECK_SIZEOF(long long,0)
+AC_CHECK_SIZEOF(float,0)
+AC_CHECK_SIZEOF(double,0)
+AC_CHECK_SIZEOF(long double,0)
+AC_CHECK_SIZEOF(void *,0)
+
+
+dnl **** Check for endianess
+AC_C_BIGENDIAN
+
+
+
+dnl declare --enable-* args and collect ac_help strings
+AC_ARG_ENABLE(threads, [  --enable-threads        turn on basic thread support [default=yes]
+                          ([=no] will override --with-threads)],,enable_threads=yes)
+
+if test "x$enable_threads" != "xyes"; then
+  enable_threads=no
+fi
+
+
+
+
+dnl **** Checks for FPU arithmetics
+
+AC_CACHE_CHECK( [for FPU arithmetics type], ac_cv_c_fpu_arithmetics_type,
+                  AC_TRY_RUN([
+#include <stdio.h>
+#include <string.h>
+
+#define LOG2EA 0.44269504088896340735992
+#define ACCURACY "%1.4f"
+
+typedef union {unsigned short s[[4]]; double d;} XTYPE;
+
+XTYPE X[[]] = { 
+              {{0,0,0,0}},			    /* Unknown             */
+              {{0x3fdc,0x551d,0x94ae,0x0bf8}}, 	    /* Big endian     IEEE */
+              {{0x0bf8,0x94ae,0x551d,0x3fdc}}, 	    /* Littile endian IEEE */
+              {{0037742,0124354,0122560,0057703}}   /* DEC                 */
+            };
+            
+int main (void)
+{
+    int i; char TMPSTR[[1024]]; char LOG2EA_STR[[80]];
+    i = 0;
+ 
+    sprintf(LOG2EA_STR, ACCURACY, LOG2EA);
+ 
+    for (i=3; i >= 0; i--)
+    {
+      	sprintf(TMPSTR, ACCURACY, X[[i]].d);
+      	if (strcmp(TMPSTR, LOG2EA_STR) == 0) {
+    	    break;
+      	}
+    }
+ 
+    exit(i);
+}],
+    ac_cv_c_fpu_arithmetics_type="Unknown",
+    [case "$?" in
+      "1"[)] ac_cv_c_fpu_arithmetics_type="Big endian IEEE" ;;
+      "2"[)] ac_cv_c_fpu_arithmetics_type="Little endian IEEE" ;;
+      "3"[)] ac_cv_c_fpu_arithmetics_type="DEC" ;;
+    esac],
+    ac_cv_c_fpu_arithmetics_type="Unknown") )
+
+case "$ac_cv_c_fpu_arithmetics_type" in
+  "DEC")                AC_DEFINE(HAVE_DEC_FPU) ;;
+  "Little endian IEEE") AC_DEFINE(HAVE_LIEEE_FPU) ;;
+  "Big endian IEEE")    AC_DEFINE(HAVE_BIEEE_FPU) ;;
+esac
+
+
+
+
+
+dnl Checks for libraries.
+dnl Replace `main' with a function in -lm:
+AC_CHECK_LIB(m, main)
+
+dnl Checks for header files.
+AC_STDC_HEADERS
+AC_HEADER_SYS_WAIT
+AC_HEADER_TIME
+AC_HEADER_DIRENT
+AC_CHECK_HEADERS(float.h, AC_DEFINE(HAVE_FLOAT_H))
+AC_CHECK_HEADERS(limits.h, AC_DEFINE(HAVE_LIMITS_H))
+AC_CHECK_HEADERS(sys/time.h, AC_DEFINE(HAVE_SYS_TIME_H))
+AC_CHECK_HEADERS(sys/times.h, AC_DEFINE(HAVE_SYS_TIMES_H))
+AC_CHECK_HEADERS(sys/types.h, AC_DEFINE(HAVE_SYS_TYPES_H))
+AC_CHECK_HEADERS(unistd.h, AC_DEFINE(HAVE_UNISTD_H))
+dnl note:
+dnl http://www.gnu.org/software/libtool/manual/autoconf/Defining-Symbols.html
+dnl says this one arg form of AC_DEFINE may become obsolete.
+
+dnl **** math.h and related
+AC_CHECK_HEADERS(math.h float.h ieeefp.h)
+
+dnl **** Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+
+
+
+dnl Checks for library functions.
+AC_CHECK_FUNCS(clock_gettime time times clock getcwd gethostname strcmp strncmp strlen)
+
+
+dnl **** Checks for libm
+AC_CHECK_LIB(m, main)
+if test "$ac_cv_lib_m_main" = yes; then
+  dnl **** Those functions are usually found in libm but...
+  AC_CHECK_LIB(m, hypot, AC_DEFINE(HAVE_HYPOT))
+  AC_CHECK_LIB(m, rint, AC_DEFINE(HAVE_RINT))
+  AC_CHECK_LIB(m, ceil, AC_DEFINE(HAVE_CEIL))
+  AC_CHECK_LIB(m, cbrt, AC_DEFINE(HAVE_CBRT))
+  AC_CHECK_LIB(m, log2, AC_DEFINE(HAVE_LOG2))
+  AC_CHECK_LIB(m, asinh, AC_DEFINE(HAVE_ASINH))
+  AC_CHECK_LIB(m, acosh, AC_DEFINE(HAVE_ACOSH))
+  AC_CHECK_LIB(m, atanh, AC_DEFINE(HAVE_ATANH))
+#  AC_CHECK_LIB(m, lgamma, AC_DEFINE(HAVE_LGAMMA))
+  
+  dnl **** Some braindamaged compiler suites don't have the lgamma define though
+  dnl **** the function itself does exist in libm!
+#  if test "$ac_cv_lib_m_lgamma" = yes; then
+#    AC_CACHE_CHECK("whether lgamma is defined in math.h", ac_lgamma_in_math_h,
+#        AC_EGREP_HEADER(lgamma, math.h, ac_lgamma_in_math_h="yes";
+#        AC_DEFINE(HAVE_LGAMMA_IN_MATH_H), ac_lgamma_in_math_h="no"))
+#  fi
+  
+  dnl **** The machten4 (unix for mac) system does have signgam in libm
+  dnl **** but it is not declared in <math.h>
+#  if test "$ac_cv_lib_m_lgamma" = yes; then
+#    AC_CACHE_CHECK("whether signgam is defined in math.h", ac_signgam_in_math_h,
+#        AC_EGREP_HEADER(signgam, math.h, ac_signgam_in_math_h="yes";
+#        AC_DEFINE(HAVE_SIGNGAM_IN_MATH_H), ac_signgam_in_math_h="no"))
+#  fi
+  
+#  AC_CHECK_LIB(m, erf, AC_DEFINE(HAVE_ERF))
+#  AC_CHECK_LIB(m, erfc, AC_DEFINE(HAVE_ERFC))
+#  AC_CHECK_LIB(m, j0, AC_DEFINE(HAVE_J0))
+#  AC_CHECK_LIB(m, j1, AC_DEFINE(HAVE_J1))
+#  AC_CHECK_LIB(m, jn, AC_DEFINE(HAVE_JN))
+#  AC_CHECK_LIB(m, y0, AC_DEFINE(HAVE_Y0))
+#  AC_CHECK_LIB(m, y1, AC_DEFINE(HAVE_Y1))
+#  AC_CHECK_LIB(m, yn, AC_DEFINE(HAVE_YN))
+  AC_CHECK_LIB(m, finite, AC_DEFINE(HAVE_FINITE))
+  dnl **** C9X-compatible isfinite() may be a good replacement for finite()
+  if test "$ac_cv_lib_m_finite" != yes; then
+    AC_CHECK_LIB(m, isfinite, AC_DEFINE(HAVE_ISFINITE))
+  fi
+fi
+
+
+dnl ***********************
+dnl *** g_thread checks ***
+dnl ***********************
+
+AC_ARG_WITH(threads, [  --with-threads=[none/posix/solaris/nspr] specify a thread implementation to use],
+	if test "x$with_threads" = x; then
+		want_threads=yes
+	else
+		want_threads=$with_threads
+	fi,
+	want_threads=yes)
+if test "x$enable_threads" = "xno"; then
+        want_threads=no
+fi
+if test "x$want_threads" = "xnone"; then
+	want_threads=no
+fi
+
+dnl error and warning message
+dnl *************************
+
+THREAD_NO_IMPLEMENTATION="You do not have any known thread system on your
+                computer. pulse will not be thread safe on your computer."
+
+FLAG_DOES_NOT_WORK="I can't find the MACRO, that enables thread safety on your
+                platform (normaly it's "_REENTRANT"). I'll not use any flag on
+                compilation now, but then your programs might not work.
+                Please provide information on how it is done on your system."
+
+LIBS_NOT_FOUND_1="I can't find the libraries for the thread implementation
+		"
+
+LIBS_NOT_FOUND_2=". Please choose another thread implementation or
+		provide information on your thread implementation.
+		You can also run 'configure --disable-threads' 
+		to compile without thread support."
+
+FUNC_NO_GETPWUID_R="the 'g_get_(user_name|real_name|home_dir|tmp_dir)'
+		functions will not be MT-safe during their first call because
+		there is no working 'getpwuid_r' on your system."
+
+FUNC_NO_LOCALTIME_R="the 'g_date_set_time' function will not be MT-safe
+		because there is no 'localtime_r' on your system."
+
+dnl determination of thread implementation
+dnl ***************************************
+
+have_threads=none
+if test "x$want_threads" = xyes || test "x$want_threads" = xsolaris; then
+       	case $host in
+               	*-*-solaris*)
+              	AC_CHECK_LIB(thread, cond_init, have_threads=solaris)
+		;;
+	esac
+fi
+if test "x$want_threads" = xyes || test "x$want_threads" = xposix; then
+        if test "x$have_threads" = xnone; then
+                AC_CHECK_HEADER(pthread.h, have_threads=posix)
+        fi
+fi
+if test "x$want_threads" = xyes || test "x$want_threads" = xnspr; then
+        if test "x$have_threads" = xnone; then
+		AC_CHECK_LIB(nspr21, PRP_NewNakedCondVar, have_threads=nspr)
+	fi
+fi
+
+AC_MSG_CHECKING(for thread implementation)
+
+if test "x$have_threads" = xnone && test "x$want_threads" != xno; then
+	AC_MSG_RESULT(none available)
+        AC_MSG_WARN($THREAD_NO_IMPLEMENTATION)
+else
+	AC_MSG_RESULT($have_threads)
+fi
+
+
+dnl determination of G_THREAD_LIBS
+dnl ******************************
+
+G_THREAD_LIBS=
+G_THREAD_CFLAGS=
+
+mutex_has_default=no
+case $have_threads in
+        posix)
+		G_THREAD_LIBS=error
+		AC_CHECK_LIB(pthread, pthread_attr_init,
+			     G_THREAD_LIBS="-lpthread")
+		if test "x$G_THREAD_LIBS" = xerror; then
+                	AC_CHECK_LIB(pthreads, pthread_attr_init,
+			     	G_THREAD_LIBS="-lpthreads")
+		fi
+		if test "x$G_THREAD_LIBS" = xerror; then
+                	AC_CHECK_LIB(c_r, pthread_attr_init,
+			     	G_THREAD_LIBS="-lc_r")
+		fi
+		if test "x$G_THREAD_LIBS" = xerror; then
+			AC_CHECK_FUNC(pthread_attr_init, G_THREAD_LIBS="")
+		fi
+		dnl ********** DG/UX ************
+        	if test "x$G_THREAD_LIBS" = xerror; then
+                	AC_CHECK_LIB(thread, __d10_pthread_attr_init,
+				G_THREAD_LIBS="-lthread"
+				G_THREAD_CFLAGS="-D_POSIX4A_DRAFT10_SOURCE")
+        	fi
+		dnl ********* HPUX 11 ***********
+        	if test "x$G_THREAD_LIBS" = xerror; then
+                	AC_CHECK_LIB(pthread, __pthread_attr_init_system,
+				G_THREAD_LIBS="-lpthread")
+        	fi
+                mutex_has_default=yes
+                mutex_default_type='pthread_mutex_t'
+                mutex_default_init='PTHREAD_MUTEX_INITIALIZER'
+                mutex_header_file='pthread.h'
+		g_threads_impl="POSIX"
+                ;;
+        solaris)
+		G_THREAD_LIBS=error
+                AC_CHECK_LIB(thread, cond_init, G_THREAD_LIBS="-lthread")
+                mutex_has_default=yes
+                mutex_default_type='mutex_t'
+		mutex_default_init="DEFAULTMUTEX"
+                mutex_header_file='thread.h'
+		g_threads_impl="SOLARIS"
+                ;;
+	nspr)
+		AC_CHECK_LIB(nspr21, PRP_NewNakedCondVar,
+			     G_THREAD_LIBS="-lnspr21")
+		g_threads_impl="NSPR"
+		;;
+        none)
+		g_threads_impl="NONE"
+                ;;
+        *)
+		g_threads_impl="NONE"
+		G_THREAD_LIBS=error
+                ;;
+esac
+
+if test "x$G_THREAD_LIBS" = xerror; then
+        AC_MSG_ERROR($LIBS_NOT_FOUND_1$have_threads$LIBS_NOT_FOUND_2)
+fi
+
+AC_MSG_CHECKING(necessary linker options)
+AC_MSG_RESULT($G_THREAD_LIBS)
+
+dnl determination of G_THREAD_CFLAGS
+dnl ********************************
+
+if test x"$have_threads" != xnone; then
+G_THREAD_CFLAGS="$G_THREAD_CFLAGS -D_REENTRANT" # good default guess
+
+    case $host in
+	*-aix*)
+		G_THREAD_CFLAGS="$G_THREAD_CFLAGS -D_THREAD_SAFE"
+		if test x"$GCC" = xyes; then
+            	        G_THREAD_CFLAGS="$G_THREAD_CFLAGS -mthreads"
+		fi
+		;;
+	*-freebsd2.2*)
+		G_THREAD_CFLAGS="$G_THREAD_CFLAGS -D_THREAD_SAFE"
+
+		# FreeBSD 2.2.x shiped with gcc 2.7.2.x, which doesn't support
+		# -mthreads flag.
+		;;
+    esac
+
+    # if we are not finding the ctime_r function, then we probably are
+    # not using the proper multithread flag
+    # Note: Digital UNIX 4.0d #defines ctime_r to _Pctime_r for gcc.
+    old_CPPFLAGS=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS $G_THREAD_CFLAGS"
+    AC_EGREP_HEADER([[^a-zA-Z_](_P)?ctime_r[^a-zA-Z_]], time.h, ,
+    G_THREAD_CFLAGS=
+    AC_MSG_WARN($FLAG_DOES_NOT_WORK))
+    CPPFLAGS=$old_CPPFLAGS
+
+    AC_MSG_CHECKING(necessary compiler options)
+
+    AC_MSG_RESULT($G_THREAD_CFLAGS)
+else
+    G_THREAD_CFLAGS=
+fi
+
+dnl check for mt safe function variants
+dnl ***********************************
+
+if test x"$have_threads" != xnone; then
+	pulse_save_LIBS="$LIBS"
+	pulse_save_CFLAGS="$CFLAGS"
+	# we are not doing the following for now, as this might require pulse 
+	# to always be linked with the thread libs on some platforms. 
+	# LIBS="$LIBS $G_THREAD_LIBS"
+	CFLAGS="$CFLAGS $G_THREAD_CFLAGS"
+	AC_CHECK_FUNCS(localtime_r rand_r)
+	if test "$ac_cv_header_pwd_h" = "yes"; then
+		AC_MSG_CHECKING([for getpwuid_r])
+	 	AC_CACHE_VAL(ac_cv_func_getpwuid_r,
+			[AC_TRY_RUN([#include <errno.h>
+				int main () { char buffer[10000], *pointer; 
+				char getpwuid_r (long, void*, void*,
+					int, void*);
+				int error;
+				errno = 0;
+				error = getpwuid_r (0, &buffer, &buffer, 
+					sizeof (buffer), &pointer);
+				return errno == ENOSYS || error == ENOSYS;}],
+				[ac_cv_func_getpwuid_r=yes],
+				[ac_cv_func_getpwuid_r=no])])
+		if test "$ac_cv_func_getpwuid_r" = yes; then
+			AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_GETPWUID_R)
+		else
+			AC_MSG_RESULT(no)
+		fi
+		if test "$ac_cv_func_getpwuid_r" = "yes"; then
+			AC_MSG_CHECKING(whether getpwuid_r is posix like)
+			# getpwuid_r(0, NULL, NULL, 0) is the signature on
+			# solaris, if that is not found, the prog below won't 
+			# compile, then the posix signature is assumed as 
+			# the default.
+			AC_TRY_COMPILE([#include <pwd.h>],
+				[getpwuid_r(0, NULL, NULL, 0);],
+				[AC_MSG_RESULT(no)],
+				[AC_MSG_RESULT(yes)
+				AC_DEFINE(HAVE_GETPWUID_R_POSIX)])
+		fi
+	fi
+	if test x"$have_threads" = xposix; then
+		LIBS="$LIBS $G_THREAD_LIBS"
+		AC_MSG_CHECKING(whether pthread_getspecific is posix like)
+		# PCThreads has pthread_getspecific(pthread_key_t, void **);
+		AC_TRY_COMPILE([#include <pthread.h>],
+			[pthread_getspecific(0,NULL);],
+			[AC_MSG_RESULT(no)],
+			[AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_PTHREAD_GETSPECIFIC_POSIX)])
+		AC_MSG_CHECKING(whether pthread_mutex_trylock is posix like)
+		# DCE Threads return 1 as success, posix 0. what a mess.
+		AC_TRY_RUN([#include <pthread.h>
+			int main () { 
+			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+			return !pthread_mutex_trylock (&mutex); }],
+			[AC_MSG_RESULT(no)],
+			[AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_PTHREAD_MUTEX_TRYLOCK_POSIX)])
+		AC_MSG_CHECKING(whether pthread_cond_timedwait is posix like)
+		# DCE Threads return -1 as failure, posix ETIMEDOUT.
+		AC_TRY_RUN([#include <pthread.h>
+			int main () { 
+			pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+			pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+			struct timeval tval;
+			struct timespec tspec;
+			gettimeofday (&tval, NULL);
+			tspec.tv_sec = tval.tv_sec;
+			tspec.tv_nsec = 0;
+			return pthread_cond_timedwait (&cond,&mutex,&tspec) 
+				!= -1;}],
+			[AC_MSG_RESULT(no)],
+			[AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_PTHREAD_COND_TIMEDWAIT_POSIX)])
+	fi
+	LIBS="$pulse_save_LIBS"
+	CFLAGS="$pulse_save_CFLAGS"
+fi
+
+if test "x$enable_threads" = "xyes"; then
+	if test "$ac_cv_func_getpwuid_r" != "yes"; then
+		AC_MSG_WARN($FUNC_NO_GETPWUID_R)
+	fi
+	if test "$ac_cv_func_localtime_r" != "yes"; then
+		AC_MSG_WARN($FUNC_NO_LOCALTIME_R)
+	fi
+fi
+
+dnl This next is giving warnings.  Not sure how to fix.
+AC_DEFINE_UNQUOTED(G_THREAD_SOURCE,"gthread-$have_threads.c")
+AC_SUBST(G_THREAD_CFLAGS)
+AC_SUBST(G_THREAD_LIBS)
+
+CFLAGS="$CFLAGS $G_THREAD_CFLAGS"
+
+dnl **********************************************
+dnl *** GDefaultMutex setup and initialization ***
+dnl **********************************************
+dnl
+dnl if mutex_has_default = yes, we also got
+dnl mutex_default_type, mutex_default_init and mutex_header_file
+PULSE_IF_VAR_EQ(mutex_has_default, yes,
+	PULSE_SIZEOF([#include <$mutex_header_file>],
+                    $mutex_default_type,
+                    gmutex,
+                    )
+	PULSE_BYTE_CONTENTS([#include <$mutex_header_file>],
+			   $mutex_default_type,
+			   gmutex,
+			   $pulse_cv_sizeof_gmutex,
+			   $mutex_default_init)
+	,
+)
+
+
+dnl **** Check for XDR
+mdw_CHECK_MANYLIBS(xdrstdio_create, nsl rpc xdr rpclib, XDR_LIB=$mdw_cv_lib_xdrstdio_create, XDR_LIB="NONE")
+
+if test "${XDR_LIB}" = "NONE"; then
+  XDR_LIB=
+  AC_MSG_RESULT(--> No XDR library found)
+else
+  AC_MSG_RESULT(--> XDR library found)
+fi
+
+
+dnl **** check if user wants to compile with debugging support
+AC_ARG_ENABLE(debug,
+[  --enable-debug          turn on debugging (default = no)],
+[case "${enableval}" in
+  yes) debug=true ;;
+  no)  debug=false ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-debug) ;;
+esac],[debug=false])
+
+case $debug in
+  true) CFLAGS="$DEBUG $CFLAGS"; AC_DEFINE(WITH_DEBUG);;
+  *) CFLAGS="$OPTIMIZE $CFLAGS";;
+esac
+
+
+dnl We need to explicitly output all the makefiles here.
+dnl Automake doesn't actually figure this out.
+AC_OUTPUT(Makefile src/Makefile doc/Makefile)

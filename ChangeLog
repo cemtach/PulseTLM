@@ -1,0 +1,93 @@
+2009-09-26 Sasse/Hayes
+
+	* Numerous fixes rolled into update compilation across updated
+	platforms
+
+1999-09-12  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Added a 2D example case08 untested, noticed a problem in PNM
+	output code which will cause problems, needs a rewrite.
+
+	* Moved initial file stuff into main and out of userOutput
+	routines which avoids the recheck every time output occurs.
+
+	* Fixed a few typo bugs
+
+	* Problems with timing on some machines addressed hopefully with
+	configure and compiler defines.  It should use any and all timing
+	capabilities available to it which gives a robust timing
+	mechanism.  Note that clock_gettime is more representative of wall
+	clock simulation time and thus may vary greatly if you are running
+	other things at the same time.  If almost nothing else consumes
+	CPU time, then clock_gettime and times/clock should mostly agree.
+	
+1999-09-10  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Reworking the test directory and GNU configure/make scripts is
+	getting closer to usable functionality.
+
+1999-09-08  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Improved logfile a bit.
+
+	* Automatic removal of all old simulation files as the simulation
+	begins which is necessary when many output files are opened as
+	append.
+ 
+1999-09-07  Paul Robert Hayes  <prh@cemtach.com>
+
+	* More configuration work even though it's a bit of overkill now,
+	the utility should pan out as different machines are used and more
+	functionality is added.
+
+	* All code should include config.h first as it is configure to the
+	system by configure.  System includes come after that based on
+	ifdef per system irregularity and local code includes come last.
+
+	* Added wr90 waveguide example.
+
+	* Fixing timing to work at top level.
+
+1999-09-06  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Conversion to a GNU configure and make structure begins.
+
+	* Started adding more debugging/checking to parseFile and main.
+
+	* Added maximumSimulationTime as a control quantity which is a bit
+	more direct when comparing to input stimuli.  This will override
+	any previously or not set maximumIteration values.
+
+1999-08-27  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Functional version came online.  Simple typos had been the
+	problem.  Going ahead with a 0.1 release keeping in mind that it
+	isn't fully implemented or documented, yet this will give an idea
+	of where the code is going.
+
+	* Broke out the directories a bit so the src and test files were
+	easier to manage started adding in the canoniocal tests and
+	documenting what they test.  This could take a while....  However,
+	it gives a valuable set of examples in the input language and also
+	rigorously tests the separate pieces of the code.
+
+1999-08-25  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Only generating minimal input checking for now, once the code is
+	running more thoroughly, more time can be spent in user input
+	checking.
+
+	* Testing began in earnest, some cases work, others don't adding
+	input and output styles as I go.  Each needs debugging, probably
+	some typos.
+
+1999-08-23  Paul Robert Hayes  <prh@cemtach.com>
+
+	* Leaving input language mostly identical to original code in 0.1
+	version to give a `talking point' about input languages.
+
+	* Creation.  Okay, not really, but the `porting' of my old TLM
+	code originally written circa 1989-92 into a Pulse code.  This
+	means adding more documention and a rewrite based on the coding
+	tricks I've learned since then.  
+
