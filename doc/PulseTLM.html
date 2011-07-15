@@ -1,0 +1,241 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<title>PulseTLM</title>
+<style fprolloverstyle>A:hover {color: #FF0000; font-weight: bold}
+</style>
+<meta http-equiv="Page-Enter" content="blendTrans(Duration=1.0)">
+<!--mstheme--><link rel="stylesheet" type="text/css" href="../../_themes/cemtachtheme/cemt1011.css"><meta name="Microsoft Theme" content="cemtachtheme 1011, default">
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0"><table width="1024" cellpadding="0" cellspacing="0" border="0" height="234">
+	<tbody><tr>
+		<td width="232" valign="top" height="234">
+            <img border="0" src="../../images/cornerLogo4.jpg" width="234" height="234">
+        </td>
+		<td valign="top" height="234" width="875">
+        <p align="center">&nbsp;
+            <br>
+        <img border="0" src="../../images/cemtachLogo.jpg" hspace="0" alt="The CEMTACH Group" align="center" width="767" height="76"></p>
+            <p style="position: relative !important; ">
+            <!--webbot bot="Navigation" S-Type="banner" S-Rendering="graphics"
+            S-Orientation B-Include-Home B-Include-Up U-Page="PulseTLM.html" S-Target startspan --><img src="_derived/PulseTLM.html_cmp_cemtachtheme010_bnr.gif" width="600" height="60" border="0" alt="PulseTLM"><!--webbot bot="Navigation" i-checksum="64193" endspan --><p>
+        <!--webbot bot="Navigation" S-Orientation="horizontal" S-Rendering="html" S-Bar="MoreDots" S-Btn-Nml="&lt;A HREF=&quot;#URL#&quot; TARGET=&quot;#TARGET#&quot; STYLE=&quot;{text-decoration: none;}&quot;&gt;#LABEL#&lt;/A&gt;" S-Btn-Sel="#LABEL#" S-Btn-Sep="&amp;nbsp;&amp;bull;&amp;nbsp;" S-Bar-Pfx="&amp;bull;&amp;nbsp;" S-Bar-Sfx="&amp;nbsp;&amp;bull;" S-Type="top" B-Include-Home="TRUE" B-Include-Up="FALSE" startspan -->&bull;&nbsp;<nobr><A HREF="../../index.html" TARGET="" STYLE="{text-decoration: none;}">Home</A></nobr>&nbsp;&bull;&nbsp;<nobr><A HREF="../../references.html" TARGET="" STYLE="{text-decoration: none;}">References</A></nobr>&nbsp;&bull;<!--webbot bot="Navigation" i-checksum="62984" endspan --><br>
+          <!--webbot bot="Navigation" S-Orientation="horizontal" S-Rendering="html" S-Bar="Slashes" S-Btn-Nml="&lt;A HREF=&quot;#URL#&quot; TARGET=&quot;#TARGET#&quot; STYLE=&quot;{text-decoration: none;}&quot;&gt;#LABEL#&lt;/A&gt;" S-Btn-Sel="#LABEL#" S-Btn-Sep="&amp;nbsp;/&amp;nbsp;" S-Type="siblings" B-Include-Home="FALSE" B-Include-Up="FALSE" startspan --><nobr><A HREF="../ToyPlaneFDTD/ToyPlaneFDTD.html" TARGET="" STYLE="{text-decoration: none;}">ToyPlaneFDTD</A></nobr>&nbsp;/&nbsp;<nobr><A HREF="../ToyPlaneFDTDnaanan/ToyPlaneFDTDnaanan.html" TARGET="" STYLE="{text-decoration: none;}">ToyPlaneFDTDnaanan</A></nobr>&nbsp;/&nbsp;<nobr><A HREF="../ToyTLM/ToyTLM.html" TARGET="" STYLE="{text-decoration: none;}">ToyTLM</A></nobr>&nbsp;/&nbsp;<nobr>PulseTLM</nobr><!--webbot bot="Navigation" i-checksum="26505" endspan --></td>
+	</tr>
+</tbody></table><table border="0" width="1024">
+  <tr>
+    <td width="80">&nbsp;</td>
+    <td width="89%">
+<p><font size=+1 face="Arial,Helvetica"><b>PulseTLM</b> is a more
+full featured 3D Transmission Line Matrix (TLM) simulator that is published
+under the <b><a href="../gpl.txt">GNU General
+Public License</a></b> with an input language that allows a wide variety
+of EM systems to be solved without recompiling the simulator.&nbsp; PulseTLM
+allows a variety of input (ex, ey, ez, hx, hy, hz) crossed with (impulse,
+sin, exp) sourcing and output (ex, ey, ez, hx, hy, hz, |e|, |h|) crossed
+with (viz, BoB, pnm, dat, grace, binary) display options.&nbsp; This is
+currently in alpha stage, however has passed several canonical tests which
+are included in the package.&nbsp; This is the simulation engine where
+the ideas, algorithms and&nbsp; coding strategies tested in the Toy and
+ToyPlane variants will be integrated.</font>
+<p><font size=+1 face="Arial,Helvetica">TLM is a full wave time-domain
+local-operator algorithm for solving Maxwell's equations.&nbsp; Don't let
+the name fool you, in this situation 'Transmission Line' is actually an
+abstraction that allows the set of coupled differential equations to be
+solved in a different manner.&nbsp; This uniquely different manner has
+some very interesting properties which can be seen in the PulseTLM code.&nbsp;</font>
+<p><font size=+1 face="Arial,Helvetica">This alpha release should
+be functional for you, yet there are only spartan README files and simulation
+examples.&nbsp; Expect more to come.&nbsp; The code is well documented
+and should be adequate for the moment.</font>
+    <p><b>
+    <font size="+1" face="Arial,Helvetica">Download:</font></b></p>
+    <table cellSpacing="5" cols="2" cellPadding="5" width="100%" border="5" NOSAVE>
+      <tr>
+        <td><font size="+1" face="Arial,Helvetica"><a href="ChangeLog">ChangeLog</a></font></td>
+        <td><a href="PulseTLM-0.2.2.tar.gz"><b>
+        <font face="Arial,Helvetica" size="+1">PulseTLM-0.2.2.tar.gz</font></b>
+        </a> 
+        </td>
+      </tr>
+    </table>
+    <p><font size="+1" face="Arial,Helvetica">Numerous tests are included in the 
+    package with MANY more coming, one quick way to start is run one of the test 
+    cases and study the results.&nbsp; Once comfortable with the results, then copy 
+    the original test case and modify it to suit your current needs.&nbsp; Note, that 
+    only MINIMAL INPUT CHECKING is performed currently.&nbsp; If the input file is 
+    modified incorrectly, you may cause it to crash/core dump. Better input 
+    checking/parsing is on the calendar for development.</font> <br>
+    &nbsp; <br>
+    &nbsp; </p>
+    <p><b><font size="+1" face="Arial,Helvetica">PulseTLM's 'Language'</font></b></p>
+    <p><font size="+1" face="Arial,Helvetica">PulseTLM is fed by an input file 
+    of single line control statements.</font> </p>
+    <p><font size="+1" face="Arial,Helvetica">Comments are allowed when preceded 
+    on the line by a pound sign, #.&nbsp; The code actually disregards all lines that 
+    do not fit into the language specification.&nbsp; However, to be safe, do not 
+    count on this.</font> </p>
+    <p><font size="+1" face="Arial,Helvetica">The overall mesh dimensions are 
+    specified by the line</font> </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">mesh 132 20 9</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">which should be the first operational 
+    line of the file.&nbsp; Comments, of course, may precede since they are not 
+    operational.&nbsp; This line tells the simulator that 132 voxels in the x 
+    direction, 20 voxels in the y direction and 9 voxels in the z direction 
+    should be allocated for this simulation.</font>
+    <p><font size="+1" face="Arial,Helvetica">The maximum number of iterations 
+    the simulation will run is specified by the line</font> </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">maximumIteration 1003</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">where zero, 0, is assumed as the 
+    start and one, 1, is the first iteration.&nbsp; This line tells the simulator 
+    that 1003 iterations in time should be performed.</font>
+    <p><font size="+1" face="Arial,Helvetica">The spatial deltas in each 
+    coordinate direction are specified by the lines</font> </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">dx 0.00113333</font> <br>
+      <font size="+1" face="Arial,Helvetica">dy 0.001145</font> <br>
+      <font size="+1" face="Arial,Helvetica">dz 0.00113333</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">which specify the physical size of a 
+    modeling voxel, or 3D box, in each of the Cartesian directions.&nbsp; These lines 
+    straightforwardly set the appropriate spatial delta.</font>
+    <p><i><font size="+1" face="Arial,Helvetica">The previous input lines should 
+    be the first operations ones in the input file.&nbsp; The remaining input control 
+    statements may appear in any order and describe the geometry, boundary 
+    conditions, input , output and materials to the simulator.</font></i> </p>
+    <p><font size="+1" face="Arial,Helvetica">Excitations are specified in a 
+    reasonably general form</font> </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">excitation 1 1&nbsp;&nbsp; 1 20&nbsp;&nbsp; 1 9 ez sin 
+      1.1 10.0e9 1.2e-9 0.00015</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">tells the simulator that from x 
+    voxels 1 to 1, from y voxels 1 to 20 and from z voxels 1 to 9 the ez field 
+    in each voxel should be set as a sine function of the following form</font>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">1.0 * sin(2.0*M_PI*10.0e+9*(t - 
+      1.2e-9)) + 0.00015</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">or</font>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">excitation iLow iHigh jLow jHigh 
+      kLow kHigh [ex, ey, ez, hx, hy, hz] [sin, exp1] k1 k2 k3 k4</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">where one of the field components to 
+    excite [ex, ey, ez, hx, hy, hz] must be chosen, one of the excitation 
+    functions [sin, exp1] must be chosen and the constants k1-4 must be set for 
+    the particular function chosen.&nbsp; The Low and High values set the range of 
+    the excitation within the TLM 3D mesh of voxels.&nbsp; This form allows a point 
+    excitation by setting the iLow = iHigh, jLow=jHigh and kLow=kHigh.&nbsp; It 
+    allows a linear excitation if only one set varies, for example iLow = iHigh, 
+    jLow=jHigh and kLow&lt;kHigh.&nbsp; It allows planar and volumetric excitations with 
+    the other combinations.&nbsp; It's not perfect, but it gets quite a few input 
+    possibilities there.</font>
+    <p><font size="+1" face="Arial,Helvetica">Outputs are specified somewhat 
+    similarly to the excitations</font> </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">output 20 20&nbsp; 10 10&nbsp; 5 5&nbsp; ez dat 1</font>
+      <br>
+      <font size="+1" face="Arial,Helvetica">output 1 132&nbsp; 1 20&nbsp; 1 9&nbsp; ez viz 100</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">The range operations are identical to 
+    excitations.&nbsp; Both lines here specify output of the ez field component.&nbsp; The 
+    first line output to a 'dat' file which is an ASCII formatted file with each 
+    line containing the currentSimulationTime and the field component at that 
+    time.&nbsp; This format is usefull when 'point' ranges have been set.&nbsp; The 'dat' 
+    file then becomes an xy data file suitable for plotting in xmgr, xmgrace or 
+    other graphing packages.&nbsp; The second line specified a viz formatted output 
+    set that contains a viz control file and all the requested BoB files.&nbsp; The 
+    viz control file contains sizing information, scaling information for the 
+    real values of the field components (BoB being only bytes doesn't contain 
+    any floating point range information.) and other relevant info for viz.&nbsp; The 
+    last number on the output line is the modulo of the output which allows some 
+    measure of control on how much data is dumped out.&nbsp; With 'dat' files, size 
+    is really not much of a problem in 1D dumps.&nbsp; With viz and BoB files, size 
+    becomes a problem VERY quickly so using modulo dumps of every 100'th 
+    iteration is quite valuable for saving disk space.</font>
+    <p><font size="+1" face="Arial,Helvetica">Being based on a transmission line 
+    analogy allows a unique strategy for specifying boundaries in the 
+    simulator.&nbsp; Reflection and transmission coefficients identical to 
+    transmission line analysis or plane wave analysis may be set in the 
+    simulator as</font> </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">rtxl 1 1&nbsp;&nbsp; 1 20&nbsp;&nbsp; 1 9 0.0</font>
+      <br>
+      <font size="+1" face="Arial,Helvetica">rtxh 132 132&nbsp;&nbsp; 1 20&nbsp;&nbsp; 1 9 -1.0</font>
+      <p><font size="+1" face="Arial,Helvetica">rtyl 1 132&nbsp; 1 1&nbsp; 1 9 -1.0</font>
+      <br>
+      <font size="+1" face="Arial,Helvetica">rtyh 1 132&nbsp; 20 20&nbsp; 1 9 -1.0</font>
+      </p>
+      <p><font size="+1" face="Arial,Helvetica">rtzl 1 132&nbsp; 1 20&nbsp; 1 1 -1.0</font>
+      <br>
+      <font size="+1" face="Arial,Helvetica">rtzh 1 132&nbsp; 1 20&nbsp; 9 9 -1.0</font></p>
+    </blockquote>
+    <font size="+1" face="Arial,Helvetica">where the keyword, rtxl, indicates a 
+    rho-tau boundary at the x lower face of the voxels defined by the ranges 1 
+    to 1 in x, 1 to 20 in y and 1 to 9 in z.&nbsp; The applied reflection coefficient 
+    is 0.0 which indicates that this boundary has 0.0 reflections or is acting 
+    as an absorbing boundary.&nbsp; The keyword, rtzh, indicates a rho-tau boundary 
+    at the z upper face of the voxels defined by the ranges 1 to 132 in x, 1 to 
+    20 in y and 20 to 20 in z.&nbsp; The applied reflection coefficient is -1.0 which 
+    indicates that this boundary has -1.0 reflections of the electric field or 
+    is acting as a perfect electric conductor (PEC).&nbsp; The same point, line and 
+    plane philosophy can be applied to the range specification here which allows 
+    single voxel boundaries, linear voxel boundaries or planar boundaries.&nbsp; 
+    Currently, the file format limits the planes to lie normal to one of the 
+    coordinate axes.&nbsp; There is a workaround, though by specifying the single 
+    voxel boundaries over a stair stepped range.&nbsp; A separate program could 
+    create the input file to PulseTLM.&nbsp; This is primarily an input file 
+    limitation.</font>
+    <p><font size="+1" face="Arial,Helvetica">Generic points, lines, planes and 
+    boxes of voxels may be set to a material property with the following line</font>
+    </p>
+    <blockquote>
+      <font size="+1" face="Arial,Helvetica">material 1 30 1 30 1 30 1.0 5.0 0.0</font></blockquote>
+    <font size="+1" face="Arial,Helvetica">which sets the box (1-30, 1-30, 1-30) 
+    to relative permeability 1.0 and relative permittivity 5.0.&nbsp; The last number 
+    is conductivity which is not currently implemented in the simulator.&nbsp; Quite 
+    complex material systems may be created via Constructive Solid Geometry 
+    (CSG) which works in this case via overlays.&nbsp; If you're familiar with IC 
+    processing, you'll recognize this one.&nbsp; Add a line to the input file 
+    describing a material region comparable to laying a region of material on 
+    the wafer surface.&nbsp; Add a line AFTER that line yet covering SOME of the same 
+    voxel regions.&nbsp; The second line will overwrite the first lines material 
+    parameters in the overlapping region.&nbsp; This is comparable to a deposit-etch 
+    cycle in IC processing.</font> <br>
+    &nbsp; <br>
+    &nbsp; <br>
+    &nbsp; <br>
+    &nbsp;
+    <p><font size="+1" face="Arial,Helvetica">This alpha release should be 
+    functional for you, yet there are only spartan README files and simulation 
+    examples.&nbsp; Expect more to come.&nbsp; The code is well documented and should be 
+    adequate for the moment.</font></p>
+    <p><b><font size="+1" face="Arial,Helvetica">Spartan page?&nbsp; Well, it IS 
+    alpha source.&nbsp; Consider yourself forewarned.&nbsp; Check back again to obtain a 
+    upgraded release.&nbsp; If you have ideas or possible upgrades, please send them 
+    in.</font></b></td>
+  </tr>
+  <tr>
+    <td width="80"></td>
+    <td width="89%">
+    <!--webbot bot="Navigation" S-Type="top"
+      S-Orientation="horizontal" S-Rendering="html" B-Include-Home="TRUE"
+      B-Include-Up="FALSE" U-Page="file:///D:/cemtach/cemtach.com/referenceSoftware/PulseTLM/PulseTLM.html" S-Btn-Nml="&lt;A HREF=&quot;#URL#&quot; TARGET=&quot;#TARGET#&quot; STYLE=&quot;{text-decoration: none;}&quot;&gt;#LABEL#&lt;/A&gt;" S-Btn-Sel="#LABEL#" S-Btn-Sep="&amp;nbsp;&amp;bull;&amp;nbsp;" S-Bar-Pfx="&amp;bull;&amp;nbsp;" S-Bar-Sfx="&amp;nbsp;&amp;bull;" S-Bar="MoreDots" startspan -->&bull;&nbsp;<nobr><A HREF="../../index.html" TARGET="" STYLE="{text-decoration: none;}">Home</A></nobr>&nbsp;&bull;&nbsp;<nobr><A HREF="../../references.html" TARGET="" STYLE="{text-decoration: none;}">References</A></nobr>&nbsp;&bull;<!--webbot bot="Navigation" i-checksum="62984" endspan --></td>
+  </tr>
+  <tr>
+    <td width="80"></td>
+    <td width="89%" align="center">
+      <h5>Send mail to <a href="mailto:info@cemtach.com">
+      <!--webbot
+bot="Substitution" s-variable="CompanyWebmaster" startspan -->info@cemtach.com<!--webbot bot="Substitution" i-checksum="52727" endspan --></a> with
+questions or comments about this web site.<br>
+
+
+Copyright © 2004 <!--webbot bot="Substitution"
+s-variable="CompanyLongName" startspan -->The CEMTACH Group<!--webbot bot="Substitution" i-checksum="47631" endspan -->.&nbsp; All rights reserved.</h5>
+    </td>
+  </tr>
+</table></body>
+
+</html>

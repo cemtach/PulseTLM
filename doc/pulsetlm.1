@@ -1,0 +1,288 @@
+.TH PulseTLM 1
+.\"The layout in this is horrible at the moment, and I'm sure that \"
+.\"the use of TBL or similar could improve it. I'm not up to that yet,\"
+.\"but maybe someone else is, Feel free to hack this about."
+.SH NAME
+pulsetlm - Transmission Line Matrix modeller
+.SH SYNOPSIS
+pulsetlm \fIfile\fR
+.SH DESCRIPTION
+\fBPulseTLM\fR is a 3D Transmission Line Matrix (TLM) simulator
+that is published under the GNU General Public Licence (GPL).
+TLM is a full wave time-domain
+local-operator algorithm for solving Maxwell's equations, where
+the 'Transmission Line' is an
+abstraction that allows the set of coupled differential equations to be
+solved numerically.
+.LP
+\fBPulseTLM\fB has an input language that allows a wide variety
+of EM systems to be solved without recompiling the simulator.
+\fBPulseTLM\fR allows a variety of input sources (ex, ey, ez, hx, hy, hz)
+which may be impulses, sinusoidal or exponential and outputs
+(ex, ey, ez, hx, hy, hz, |e|, |h|) which may be in various formats
+(viz, BoB, pnm, dat, grace, binary, xml).
+This is currently alpha software, however it has passed several
+canonical tests which are included in the package.
+.LP
+Only MINIMAL INPUT CHECKING is applied to the input language at present.
+An incorrect input file may cause a crash.
+The input is read from the filename supplied on the command line.
+It consists of single line control statements.  Comments are allowed
+when preceded by a hash sign (#).
+The input language is as
+follows, described by this BNF syntax:
+.LP
+input : mesh_statement maxiter_statement spatialdeltas otherstatements ;
+.br
+mesh_statement : 'mesh' x y z ;
+.br
+maxiterstatement : 'maximumIteration' n ;
+.br
+spatialdeltas : 'dx' f newline 'dy' f newline 'dz' f newline ;
+.br
+otherstatements : excitation_statement
+.br
+.RS
+                | boundary_statement
+.br
+                | material_statement
+.br
+                | otherstatements
+.br
+                ;
+.RE
+.br
+excitation_statement: 
+.br
+.RS
+      'excitation' bounding_box eh_component function
+.br
+      f1 f2 f3 f4 ;
+.RE
+boundary_statement : rho_tau_boundary bounding_box f ;
+.br
+material_statement : 'material' bounding_box ur er sigma 
+.br
+ur : f ; 
+er : f ;
+sigma : f ; 
+.br
+output statement : 'output' bounding_box eh_component format n
+.br
+bounding_box : x1 x2 y1 y2 z1 z2 ;
+.br
+eh_component : 'ex' | 'ey' | 'ez' | 'hx' | 'hy' | 'hz' ;
+.br
+function : 'sin' | 'exp1' | 'impulse' ;
+.br
+format : 'dat' | 'mtv' | 'pnm' | 'viz' | 'xml' ; 
+.br
+rho_tau_boundary : 'rtxl' | 'rtxh' | 'rtyl' | 'rtyh' | 'rtzl' | 'rtzh' ;
+.br
+where f means a floating point number, n is an integer, x1, x2 etc are limits
+on those axes. ur is relative permeability, er is relative pemittivity, and
+sigma is conductivity.
+Conductivity is not implemented at present.
+.LP
+The overall mesh dimensions in voxels are specified by the line 
+of the form
+.br
+.RS
+  mesh 132 20 9
+.RE
+.br
+which should be the first operational 
+line of the file.  Voxels are indexed by C-style indexes, the
+half open interval [0, n) (like, for(i=0; i<n; i++);).
+Comments, of course, may precede since they are not 
+operational. This line tells the simulator that 132 voxels in the x 
+direction, 20 voxels in the y direction and 9 voxels in the z direction 
+should be allocated for this simulation.
+.LP
+The maximum number of iterations 
+the simulation will run is specified by the line
+.RS
+  maximumIteration 1003
+.RE
+where zero, 0, is assumed as the 
+start and one, 1, is the first iteration.&nbsp; This line tells the simulator 
+that 1003 iterations in time should be performed.
+.LP
+The spatial deltas in each 
+coordinate direction are specified by the lines
+.br
+.RS
+  dx 0.00113333
+.br
+  dy 0.001145
+.br
+  dz 0.00113333
+.br
+.RE
+which specify the physical size of a 
+modeling voxel, or 3D box, in each of the Cartesian directions. These lines 
+straightforwardly set the appropriate spatial delta.
+.LP
+The previous input lines should 
+be the first operations ones in the input file.&nbsp; The remaining input control 
+statements may appear in any order and describe the geometry, boundary 
+conditions, input , output and materials to the simulator.
+.LP
+Excitations are specified in a 
+reasonably general form
+.br
+.RS
+excitation 1 1   1 20   1 9 ez sin 
+1.1 10.0e9 1.2e-9 0.00015
+.RE
+.br
+tells the simulator that from x 
+voxels 1 to 1, from y voxels 1 to 20 and from z voxels 1 to 9 the ez field 
+in each voxel should be set as a sine function of the following form
+.br
+.RS
+  1.0 * sin(2.0*M_PI*10.0e+9*(t - 
+  1.2e-9)) + 0.00015
+.br
+.RE
+or
+.br
+.RS
+  excitation iLow iHigh jLow jHigh 
+  kLow kHigh [ex, ey, ez, hx, hy, hz] [sin, exp1, impulse] f1 f2 f3 f4
+.br
+.RE
+where one of the field components to 
+excite [ex, ey, ez, hx, hy, hz] must be chosen, one of the excitation 
+functions [sin, exp1, impulse] must be chosen and the constants f1-4 must be
+set for the particular function chosen.
+.br
+The form of the equations is, for sin
+.br
+.RS
+  f1 * sin(2.0 * M_PI * f1 * (t - f3)) + f4
+.RE
+.br
+for exp1
+.br
+.RS
+  f1 * exp(-pow((t - f2)/f3, 2.0)) + f4
+.RE
+.br
+for impulse
+  f1  (for the 0th iteration)
+.br
+The Low and High values set
+the range of the excitation within the TLM 3D mesh of voxels.&nbsp; This
+form allows a point excitation by setting the iLow = iHigh, jLow=jHigh and
+kLow=kHigh.  It allows a linear excitation if only one set varies, for
+example iLow = iHigh, jLow=jHigh and kLow<kHigh.  It allows planar and
+volumetric excitations with the other combinations.  It's not perfect,
+but it gets quite a few input possibilities there.
+.LP
+Outputs are specified somewhat 
+similarly to the excitations
+.br
+.RS
+  output 20 20  10 10  5 5  ez dat 1
+.br
+  output 1 132  1 20  1 9  ez viz 100
+.br
+.RE
+The range operations are identical to 
+excitations.
+The output filename is derived from the input filename, with
+numbers and the appropriate extension added.
+Both lines here specify output of the ez field component.  The 
+first line output to a 'dat' file which is an ASCII formatted file with each 
+line containing the currentSimulationTime and the field component at that 
+time.  This format is usefull when 'point' ranges have been set.  The 'dat' 
+file then becomes an xy data file suitable for plotting in xmgr, xmgrace or 
+other graphing packages.  The second line specified a viz formatted output 
+set that contains a viz control file and all the requested BoB files.  The 
+viz control file contains sizing information, scaling information for the 
+real values of the field components (BoB being only bytes doesn't contain 
+any floating point range information.) and other relevant info for viz.  The 
+last number on the output line is the modulo of the output which allows some 
+measure of control on how much data is dumped out.  With 'dat' files, size 
+is really not much of a problem in 1D dumps.  With viz and BoB files, size 
+becomes a problem VERY quickly so using modulo dumps of every 100'th 
+iteration is quite valuable for saving disk space.
+.LP
+Being based on a transmission line 
+analogy allows a unique strategy for specifying boundaries in the 
+simulator.  Reflection and transmission coefficients identical to 
+transmission line analysis or plane wave analysis may be set in the 
+simulator as
+.br
+.RS
+rtxl 1 1   1 20   1 9 0.0
+.br
+rtxh 132 132   1 20   1 9 -1.0
+.br
+rtyl 1 132  1 1  1 9 -1.0
+.br
+rtyh 1 132  20 20  1 9 -1.0
+.br
+rtzl 1 132&nbsp; 1 20&nbsp; 1 1 -1.0
+.br
+rtzh 1 132&nbsp; 1 20&nbsp; 9 9 -1.0
+.RE
+where the keyword, rtxl, indicates a 
+rho-tau boundary at the x lower face of the voxels defined by the ranges 1 
+to 1 in x, 1 to 20 in y and 1 to 9 in z.  The applied reflection coefficient 
+is 0.0 which indicates that this boundary has 0.0 reflections or is acting 
+as an absorbing boundary.  The keyword, rtzh, indicates a rho-tau boundary 
+at the z upper face of the voxels defined by the ranges 1 to 132 in x, 1 to 
+20 in y and 20 to 20 in z.  The applied reflection coefficient is -1.0 which 
+indicates that this boundary has -1.0 reflections of the electric field or 
+is acting as a perfect electric conductor (PEC).  The same point, line and 
+plane philosophy can be applied to the range specification here which allows 
+single voxel boundaries, linear voxel boundaries or planar boundaries.  
+Currently, the file format limits the planes to lie normal to one of the 
+coordinate axes.  There is a workaround, though by specifying the single 
+voxel boundaries over a stair stepped range.  A separate program could 
+create the input file to PulseTLM.  This is primarily an input file 
+limitation.
+.LP
+Generic points, lines, planes and 
+boxes of voxels may be set to a material property with the following line
+.br
+.RS
+material 1 30 1 30 1 30 1.0 5.0 0.0
+.br
+.RE
+which sets the box (1-30, 1-30, 1-30)
+to relative permeability 1.0 and relative permittivity 5.0.  The last number 
+is conductivity which is not currently implemented in the simulator.  Quite 
+complex material systems may be created via Constructive Solid Geometry 
+(CSG) which works in this case via overlays.  If you're familiar with IC 
+processing, you'll recognize this one.  Add a line to the input file 
+describing a material region comparable to laying a region of material on 
+the wafer surface.  Add a line AFTER that line yet covering SOME of the same 
+voxel regions.  The second line will overwrite the first lines material 
+parameters in the overlapping region.  This is comparable to a deposit-etch 
+cycle in IC processing.
+.SH OPTIONS
+There are no options at present.
+.\".SH RETURN VALUE \"
+.\" Only needed for libraries.\"
+.\" Next commented out until I've confirmed it \"
+.\".SH EXIT STATUS \"
+.\"Returns 0 on successful completion.\"
+.SH FILES
+The files produced are determined by commands in the input file.
+.SH SEE ALSO
+http://www.cemtach.com/
+.\" Could add ToyTLM here,but it is not part of the same package\"
+.SH AUTHORS
+PulseTLM is by Dr Paul Robert Hayes.
+.LP
+This manual page was rewritten by Hugh Sasse from the existing HTML docs,
+aiming to put a slightly different emphasis on the information, and
+aiming for brevity.
+
+.\"Tell [tn]roff to bail out at this point:\"
+.\"(allows the addition of notes, in free form afterwards)\"
+.ex
+
