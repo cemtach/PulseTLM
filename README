@@ -1,6 +1,7 @@
-
 PulseTLM -- A Transmission Line Matrix (TLM) based modelling
-and simulation package
+and simulation package.  Note while this code is more capable when
+compared to the Toy series, PulseTLM remains designed more as an 
+educational tool.
 
 
 In order to test the make, cd into tests.  Once there, make check.
